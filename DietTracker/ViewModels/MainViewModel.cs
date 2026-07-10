@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DietTracker.Services;
 
@@ -26,12 +27,19 @@ namespace DietTracker.ViewModels
 
         private async Task InitializeAsync()
         {
-            await _dataService.InitializeAsync();
+            try
+            {
+                await _dataService.InitializeAsync();
 
-            if (_dataService.IsTodayCompiled())
-                CurrentViewModel = new CalendarViewModel(_dataService, ShowCheckIn);
-            else
-                CurrentViewModel = new CheckInViewModel(_dataService, ShowCalendar);
+                if (_dataService.IsTodayCompiled())
+                    CurrentViewModel = new CalendarViewModel(_dataService, ShowCheckIn);
+                else
+                    CurrentViewModel = new CheckInViewModel(_dataService, ShowCalendar);
+            }
+           catch (Exception ex)
+            {
+                Console.WriteLine("ERRORE INIZIALIZZAZIONE: " + ex);
+            }
         }
 
         private void ShowCalendar()
