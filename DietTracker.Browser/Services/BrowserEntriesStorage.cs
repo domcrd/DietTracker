@@ -29,7 +29,7 @@ namespace DietTracker.Browser.Services
             if (_moduleLoaded)
                 return;
 
-            await JSHost.ImportAsync("storage", "./js/storage.js");
+            await JSHost.ImportAsync("storage", "../js/storage.js");
             _moduleLoaded = true;
         }
 
