@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DietTracker.ViewModels"
+             xmlns:models="using:DietTracker.Models"
+             xmlns:conv="using:DietTracker.Converters"
+             xmlns:sys="using:Avalonia.Data.Converters"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DietTracker.Views.CalendarView"
+             x:DataType="vm:CalendarViewModel">
+
+	<!-- Grid esterno con nome, ci serve per leggere Bounds.Width/Height -->
+	<Grid x:Name="RootGrid">
+
+		<!-- ===== LIVELLO 0: calendario normale ===== -->
+		<Grid Margin="20" RowDefinitions="Auto,Auto,*">
+
+			<Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto,Auto" Margin="0,0,0,20">
+				<Button Grid.Column="0" CornerRadius ="8" Content="◀" Command="{Binding PreviousMonthCommand}" />
+				<TextBlock Grid.Column="1" Text="{Binding MonthLabel}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           FontSize="22" FontWeight="Bold" />
+				<Button Grid.Column="2" CornerRadius ="8" Content="▶" Command="{Binding NextMonthCommand}" />
+				<Button Grid.Column="3" CornerRadius ="8" Content="🐞 Reset" Command="{Binding ResetTodayCommand}"
+                        Margin="10,0,0,0" Background="Orange" />
+			</Grid>
+
+			<UniformGrid Grid.Row="1" Columns="7" Margin="0,0,0,5">
+				<TextBlock Text="Lun" HorizontalAlignment="Center" FontWeight="Bold" />
+				<TextBlock Text="Mar" HorizontalAlignment="Center" FontWeight="Bold" />
+				<TextBlock Text="Mer" HorizontalAlignment="Center" FontWeight="Bold" />
+				<TextBlock Text="Gio" HorizontalAlignment="Center" FontWeight="Bold" />
+				<TextBlock Text="Ven" HorizontalAlignment="Center" FontWeight="Bold" />
+				<TextBlock Text="Sab" HorizontalAlignment="Center" FontWeight="Bold" />
+				<TextBlock Text="Dom" HorizontalAlignment="Center" FontWeight="Bold" />
+			</UniformGrid>
+
+			<ItemsControl Grid.Row="2" ItemsSource="{Binding Days}" Margin="0,20,0,0">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<UniformGrid Columns="7" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
+					<DataTemplate x:DataType="models:CalendarDayCell">
+						<Button Margin="1"
+								CornerRadius="20"
+								Width="{Binding #RootGrid.Bounds.Width, Converter={x:Static conv:CellSizeConverter.Instance}}"
+								Height="{Binding #RootGrid.Bounds.Width, Converter={x:Static conv:CellSizeConverter.Instance}}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Top"
+								IsVisible="{Binding IsInCurrentMonth}"
+								Command="{Binding $parent[ItemsControl].((vm:CalendarViewModel)DataContext).SelectDayCommand}"
+								CommandParameter="{Binding}"
+								Background="{Binding Status, Converter={x:Static conv:NullableBoolToColorConverter.Instance}}">
+							<TextBlock Text="{Binding Date.Day}"
+									   HorizontalAlignment="Center" VerticalAlignment="Center"
+									   Foreground="{Binding Status, Converter={x:Static conv:NullableBoolToTextColorConverter.Instance}}"
+									   FontWeight="Bold" FontSize="12" />
+						</Button>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Grid>
+
+		
+		<!-- 
+		===== LIVELLO 1: overlay popup =====
+		<Grid IsVisible="{Binding SelectedDayDetail, Converter={x:Static sys:ObjectConverters.IsNotNull}}"
+              Background="#AA000000">
+
+			<Border CornerRadius="16"
+                    ClipToBounds="True"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Width="{Binding #RootGrid.Bounds.Width, Converter={x:Static conv:PercentageConverter.Instance}, ConverterParameter=0.7}"
+                    Height="{Binding #RootGrid.Bounds.Height, Converter={x:Static conv:PercentageConverter.Instance}, ConverterParameter=0.6}"
+                    DataContext="{Binding SelectedDayDetail}">
+
+				<Grid Background="{Binding IsCompliant, Converter={x:Static conv:BoolToColorConverter.Instance}}"
+                      PointerPressed="OnDetailBackgroundPressed"
+                      RowDefinitions="*,Auto">
+
+					<TextBlock Grid.Row="0" 
+                               FontSize="26" FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+					<Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="20">
+						<Button Grid.Column="0" Content="ANNULLA" FontWeight="Bold" Command="{Binding CancelCommand}" 
+				                Foreground ="White"
+								HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Padding="0,12" Margin="0,0,5,0" />
+						<Button Grid.Column="1" Content="CONFERMA" FontWeight="Bold" Command="{Binding ConfirmCommand}"
+				                Foreground ="White"
+								HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+								VerticalContentAlignment="Center"
+								Padding="0,12" Margin="5,0,0,0" />
+					</Grid>
+				</Grid>
+			</Border>
+		</Grid>
+        -->
+	</Grid>
+</UserControl>

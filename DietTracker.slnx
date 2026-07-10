@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="DietTracker.Android/DietTracker.Android.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="DietTracker.Browser/DietTracker.Browser.csproj" />
+  <Project Path="DietTracker.Desktop/DietTracker.Desktop.csproj" />
+  <Project Path="DietTracker.iOS/DietTracker.iOS.csproj">
+    <Deploy />
+  </Project>
+  <Project Path="DietTracker/DietTracker.csproj" />
+</Solution>
